@@ -1,4 +1,6 @@
-﻿using Lacuna.Space.Application.Jobs.ProcessJob;
+﻿using Asp.Versioning;
+using Lacuna.Space.Api.Configuration;
+using Lacuna.Space.Application.Jobs.ProcessJob;
 using Lacuna.Space.Application.Orchestrations;
 using Lacuna.Space.Application.Syncs;
 using Lacuna.Space.Domain.Abstractions;
@@ -6,6 +8,8 @@ using Lacuna.Space.Infrastructure.Authentication;
 using Lacuna.Space.Infrastructure.Clients;
 using Lacuna.Space.Infrastructure.Services;
 using Lacuna.Space.Infrastructure.Validation;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Lacuna.Space.Api.Extensions;
 
@@ -39,15 +43,28 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(c =>
+        services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+        services.AddSwaggerGen();
+
+        return services;
+    }
+
+    public static IServiceCollection AddLumaApiVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(options =>
         {
-            c.SwaggerDoc("v1", new()
-            {
-                Title = "Lacuna Space API",
-                Version = "v1",
-                Description = "API para sincronização de relógios com sondas espaciais",
-                Contact = new() { Name = "Lacuna Space Team" }
-            });
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new UrlSegmentApiVersionReader(),
+                new QueryStringApiVersionReader("version"),
+                new HeaderApiVersionReader("X-Version"),
+                new MediaTypeApiVersionReader("ver")
+            );
+        }).AddApiExplorer(setup =>
+        {
+            setup.GroupNameFormat = "'v'VVV";
+            setup.SubstituteApiVersionInUrl = true;
         });
 
         return services;

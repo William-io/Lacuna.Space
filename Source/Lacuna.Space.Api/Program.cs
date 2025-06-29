@@ -1,9 +1,11 @@
+using Asp.Versioning.ApiExplorer;
 using Lacuna.Space.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Usar extensions para organizar configurações
 builder.Services.AddLumaServices(builder.Configuration);
+builder.Services.AddLumaApiVersioning();
 builder.Services.AddSwaggerDocumentation();
 
 // Configurar logging
@@ -27,7 +29,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lacuna Space API v1");
+        var provider = app.Services.GetRequiredService<Asp.Versioning.ApiExplorer.IApiVersionDescriptionProvider>();
+        
+        foreach (var description in provider.ApiVersionDescriptions)
+        {
+            c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", 
+                $"Lacuna Space API {description.GroupName.ToUpperInvariant()}");
+        }
+        
         c.RoutePrefix = "swagger";
         c.DocumentTitle = "Lacuna Space API";
     });
