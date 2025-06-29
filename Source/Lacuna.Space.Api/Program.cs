@@ -8,14 +8,6 @@ builder.Services.AddLumaServices(builder.Configuration);
 builder.Services.AddLumaApiVersioning();
 builder.Services.AddSwaggerDocumentation();
 
-// Configurar logging
-builder.Logging.AddConsole().AddSimpleConsole(options =>
-{
-    options.ColorBehavior = Microsoft.Extensions.Logging.Console.LoggerColorBehavior.Enabled;
-    options.IncludeScopes = true;
-    options.SingleLine = true;
-});
-
 var app = builder.Build();
 
 // Logging de inicialização
