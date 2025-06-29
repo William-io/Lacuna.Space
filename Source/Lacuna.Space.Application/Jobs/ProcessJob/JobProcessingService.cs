@@ -48,9 +48,8 @@ public class JobProcessingService
                 var encodedTimestamp = probe.GetEncodedTimestamp(synchronizedTime);
 
                 // Verificar job
-                var result =
-                    await _lumaApiService.CheckJobAsync(accessToken, job.Id, encodedTimestamp, probe.RoundTrip);
-
+                var result = await _lumaApiService.CheckJobAsync(accessToken, job.Id, encodedTimestamp, probe.RoundTrip);
+                
                 if (result == "Done")
                 {
                     _logger.LogInformation("Todos os trabalhos foram concluídos com sucesso! Total de trabalhos: {CompletedJobs}",

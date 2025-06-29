@@ -35,7 +35,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ClockSynchronizationService>();
         services.AddScoped<JobProcessingService>();
         services.AddScoped<LumaOrchestrationService>();
-        services.AddScoped<IResponseValidator, ResponseValidator>();
 
         return services;
     }
