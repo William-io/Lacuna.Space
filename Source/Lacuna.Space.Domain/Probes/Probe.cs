@@ -1,4 +1,5 @@
-﻿using Lacuna.Space.Domain.Abstractions;
+﻿using System.Globalization;
+using Lacuna.Space.Domain.Abstractions;
 using Lacuna.Space.Domain.Enums;
 
 namespace Lacuna.Space.Domain.Probes;
@@ -41,7 +42,7 @@ public class Probe
         return Encoding switch
         {
             TimestampEncoding.Iso8601 => new DateTimeOffset(ticks, TimeSpan.Zero).ToString(
-                "yyyy-MM-ddTHH:mm:ss.FFFFFFFzzz"),
+                "yyyy-MM-ddTHH:mm:ss.FFFFFFFK"),
             TimestampEncoding.Ticks => ticks.ToString(),
             TimestampEncoding.TicksBinary => Convert.ToBase64String(BitConverter.GetBytes(ticks)),
             TimestampEncoding.TicksBinaryBigEndian => Convert.ToBase64String(BitConverter.GetBytes(ticks).Reverse()
@@ -52,9 +53,12 @@ public class Probe
 
     public static long DecodeTimestamp(string encodedTimestamp, TimestampEncoding encoding)
     {
+        if (string.IsNullOrEmpty(encodedTimestamp))
+            throw new ArgumentException("Timestamp codificado não pode ser nulo ou vazio", nameof(encodedTimestamp));
+
         return encoding switch
         {
-            TimestampEncoding.Iso8601 => DateTimeOffset.Parse(encodedTimestamp).Ticks,
+            TimestampEncoding.Iso8601 => DateTimeOffset.Parse(encodedTimestamp, null, DateTimeStyles.RoundtripKind).Ticks,
             TimestampEncoding.Ticks => long.Parse(encodedTimestamp),
             TimestampEncoding.TicksBinary => BitConverter.ToInt64(Convert.FromBase64String(encodedTimestamp), 0),
             TimestampEncoding.TicksBinaryBigEndian => BitConverter.ToInt64(
@@ -62,7 +66,6 @@ public class Probe
             _ => throw new NotSupportedException($"Codificação {encoding} não suportada")
         };
     }
-
     // Equality members
     public override bool Equals(object? obj)
     {
