@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-namespace Lacuna.Space.Infrastructure.Services;
+namespace Lacuna.Space.Infrastructure.Clients;
 
 public class ApiClient : IApiClient
 {

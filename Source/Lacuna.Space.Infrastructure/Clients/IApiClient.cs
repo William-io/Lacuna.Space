@@ -1,4 +1,4 @@
-﻿namespace Lacuna.Space.Infrastructure.Services;
+﻿namespace Lacuna.Space.Infrastructure.Clients;
 
 public interface IApiClient
 {

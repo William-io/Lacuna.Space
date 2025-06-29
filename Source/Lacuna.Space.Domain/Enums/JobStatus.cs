@@ -2,5 +2,7 @@
 
 public enum JobStatus
 {
-    
+    Pending,
+    Completed,
+    Failed
 }
