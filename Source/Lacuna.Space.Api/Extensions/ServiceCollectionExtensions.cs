@@ -9,7 +9,6 @@ using Lacuna.Space.Infrastructure.Validation;
 
 namespace Lacuna.Space.Api.Extensions;
 
-// Extensions/ServiceCollectionExtensions.cs
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddLumaServices(this IServiceCollection services, IConfiguration configuration)
@@ -20,7 +19,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<TokenManager>();
         
-        services.AddHttpClient<ILumaApiService, LumaApiService>(client =>
+        services.AddHttpClient<IApiClient, ApiClient>(client =>
         {
             client.BaseAddress = new Uri(lumaBaseUrl);
             client.Timeout = TimeSpan.FromSeconds(lumaTimeoutSeconds);
@@ -28,10 +27,10 @@ public static class ServiceCollectionExtensions
             client.DefaultRequestHeaders.Add("User-Agent", "Lacuna-Space-Client/1.0");
         });
 
+        services.AddScoped<ILumaApiService, LumaApiService>();
         services.AddScoped<ClockSynchronizationService>();
         services.AddScoped<JobProcessingService>();
         services.AddScoped<LumaOrchestrationService>();
-        services.AddScoped<IApiClient, ApiClient>();
         services.AddScoped<IResponseValidator, ResponseValidator>();
 
         return services;
