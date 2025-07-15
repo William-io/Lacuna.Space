@@ -1,5 +1,5 @@
 
-## Arquitetura do Sistema
+## Arquitetura do Sistema - PROJETO DESAFIO
 
 O projeto segue os princípios de **Clean Architecture** e **Domain-Driven Design (DDD)**, organizando o código em camadas bem definidas:
 
